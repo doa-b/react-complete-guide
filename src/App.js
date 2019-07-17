@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import classes from './App.module.css'
 import Person from './Person/Person';
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 
 class App extends Component {
     state = {
@@ -13,7 +14,7 @@ class App extends Component {
         showPersons: false
     };
 
-    nameChangedHandler = ( event, id ) => {
+    nameChangedHandler = (event, id) => {
         const personIndex = this.state.persons.findIndex(p => {
             return p.id === id;
         });
@@ -27,7 +28,7 @@ class App extends Component {
         const persons = [...this.state.persons];
         persons[personIndex] = person;
 
-        this.setState ( {persons: persons});
+        this.setState({persons: persons});
     }
 
     togglePersonsHandler = () => {
@@ -36,7 +37,7 @@ class App extends Component {
     }
 
     deletePersonHandler = (personIndex) => {
-        const updatedPersons =[...this.state.persons];
+        const updatedPersons = [...this.state.persons];
         updatedPersons.splice(personIndex, 1);
         this.setState({persons: updatedPersons})
     }
@@ -49,13 +50,14 @@ class App extends Component {
         if (this.state.showPersons) {
             persons = (<div>
                     {this.state.persons.map((person, index) => {
-                        return <Person
-                            key={person.id}
-                            name={person.name}
-                            age={person.age}
-                            click={() => this.deletePersonHandler(index)}
-                            changed={(event) => this.nameChangedHandler(event, person.id)}
+                        return <ErrorBoundary key={person.id}>
+                            <Person
+                                name={person.name}
+                                age={person.age}
+                                click={() => this.deletePersonHandler(index)}
+                                changed={(event) => this.nameChangedHandler(event, person.id)}
                             />
+                        </ErrorBoundary>
                     })}
                 </div>
             );
@@ -64,11 +66,11 @@ class App extends Component {
         }
 
         const assignedClasses = [] //['red', 'bold'].join(' '); red bold valid css class list
-        if (this.state.persons.length <=2) {
-            assignedClasses.push( classes.red ) // assignedClasses = ['red']
+        if (this.state.persons.length <= 2) {
+            assignedClasses.push(classes.red) // assignedClasses = ['red']
         }
-        if (this.state.persons.length <=1) {
-            assignedClasses.push( classes.bold ) // assignedClasses = ['red, bold']
+        if (this.state.persons.length <= 1) {
+            assignedClasses.push(classes.bold) // assignedClasses = ['red, bold']
         }
 
         return (
